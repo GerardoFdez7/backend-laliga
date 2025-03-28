@@ -1,15 +1,10 @@
-FROM golang:1.21 AS builder
-
+FROM golang:1.24.1-alpine
+RUN apk add --no-cache postgresql-client
 WORKDIR /app
+COPY go.mod go.sum ./
+RUN go get -d ./... && go mod tidy
 COPY . .
-RUN go mod download
-RUN CGO_ENABLED=0 GOOS=linux go build -o backend .
-
-FROM alpine:latest  
-RUN apk --no-cache add ca-certificates
-WORKDIR /root/
-COPY --from=builder /app/backend .
-COPY --from=builder /app/.env .  
-
+COPY start.sh /app/start.sh
+RUN chmod +x /app/start.sh
 EXPOSE 8080
-CMD ["./backend"]
+CMD ["sh", "/app/start.sh"]
