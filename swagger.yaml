@@ -1,0 +1,207 @@
+info:
+  title: API de La Liga Tracker
+  description: API para gestionar partidos de fútbol, incluyendo equipos, fechas y estadísticas.
+  version: 1.0.0
+  contact:
+    name: Gerardo Fernandez
+    email: fer23763@uvg.edu.gt
+
+servers:
+  - url: http://localhost:8080
+    description: Servidor local
+
+paths:
+  /api/matches:
+    get:
+      summary: Obtener todos los partidos
+      responses:
+        "200":
+          description: Lista de partidos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Match"
+    post:
+      summary: Crear un nuevo partido
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MatchInput"
+      responses:
+        "201":
+          description: Partido creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Match"
+
+  /api/matches/{id}:
+    get:
+      summary: Obtener un partido por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Detalles del partido
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Match"
+        "404":
+          description: Partido no encontrado
+
+    put:
+      summary: Actualizar un partido
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MatchInput"
+      responses:
+        "200":
+          description: Partido actualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Match"
+        "404":
+          description: Partido no encontrado
+
+    delete:
+      summary: Eliminar un partido
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Partido eliminado
+        "404":
+          description: Partido no encontrado
+
+  /api/matches/{id}/goals:
+    patch:
+      summary: Incrementar goles de un partido
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Goles incrementados
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Match"
+        "404":
+          description: Partido no encontrado
+
+  /api/matches/{id}/yellowcards:
+    patch:
+      summary: Incrementar tarjetas amarillas de un partido
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Tarjetas amarillas incrementadas
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Match"
+        "404":
+          description: Partido no encontrado
+
+  /api/matches/{id}/redcards:
+    patch:
+      summary: Incrementar tarjetas rojas de un partido
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Tarjetas rojas incrementadas
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Match"
+        "404":
+          description: Partido no encontrado
+
+  /api/matches/{id}/extratime:
+    patch:
+      summary: Incrementar tiempo extra de un partido
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Tiempo extra incrementado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Match"
+        "404":
+          description: Partido no encontrado
+
+components:
+  schemas:
+    Match:
+      type: object
+      properties:
+        id:
+          type: integer
+        homeTeam:
+          type: string
+        awayTeam:
+          type: string
+        matchDate:
+          type: string
+          format: date
+        goals:
+          type: integer
+        yellowCards:
+          type: integer
+        redCards:
+          type: integer
+        extraTime:
+          type: integer
+
+    MatchInput:
+      type: object
+      properties:
+        homeTeam:
+          type: string
+        awayTeam:
+          type: string
+        matchDate:
+          type: string
+          format: date
