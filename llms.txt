@@ -1,0 +1,54 @@
+# Uso de la API de La Liga Tracker
+
+La API de La Liga Tracker permite gestionar partidos de fútbol, incluyendo equipos, fechas y estadísticas. A continuación se describen las principales funcionalidades y cómo interactuar con ellas.
+
+## Endpoints Principales
+
+### Obtener todos los partidos
+- **Ruta:** `/api/matches`
+- **Método:** GET
+- **Descripción:** Recupera una lista de todos los partidos almacenados en la base de datos.
+- **Respuesta:** Devuelve un array de objetos `Match`.
+
+### Crear un nuevo partido
+- **Ruta:** `/api/matches`
+- **Método:** POST
+- **Descripción:** Permite crear un nuevo partido proporcionando los equipos y la fecha del partido.
+- **Cuerpo de la solicitud:** Debe incluir un objeto `MatchInput` con los campos `homeTeam`, `awayTeam`, y `matchDate`.
+- **Respuesta:** Devuelve el objeto `Match` creado.
+
+### Obtener un partido por ID
+- **Ruta:** `/api/matches/{id}`
+- **Método:** GET
+- **Descripción:** Recupera los detalles de un partido específico utilizando su ID.
+- **Respuesta:** Devuelve el objeto `Match` correspondiente al ID proporcionado.
+
+### Actualizar un partido
+- **Ruta:** `/api/matches/{id}`
+- **Método:** PUT
+- **Descripción:** Actualiza los detalles de un partido específico.
+- **Cuerpo de la solicitud:** Debe incluir un objeto `MatchInput` con los campos a actualizar.
+- **Respuesta:** Devuelve el objeto `Match` actualizado.
+
+### Eliminar un partido
+- **Ruta:** `/api/matches/{id}`
+- **Método:** DELETE
+- **Descripción:** Elimina un partido específico de la base de datos.
+- **Respuesta:** Confirma la eliminación del partido.
+
+### Incrementar estadísticas de un partido
+- **Rutas:** `/api/matches/{id}/goals`, `/api/matches/{id}/yellowcards`, `/api/matches/{id}/redcards`, `/api/matches/{id}/extratime`
+- **Método:** PATCH
+- **Descripción:** Incrementa el número de goles, tarjetas amarillas, tarjetas rojas o tiempo extra de un partido específico.
+- **Respuesta:** Devuelve el objeto `Match` con las estadísticas actualizadas.
+
+## Configuración del Servidor
+
+La API se ejecuta en un servidor local en el puerto 8080. Asegúrate de que el servidor esté en funcionamiento antes de realizar solicitudes.
+
+## Consideraciones
+
+- **Formato de Fecha:** Las fechas deben estar en el formato `YYYY-MM-DD`.
+- **Errores:** La API devuelve mensajes de error en caso de que un partido no se encuentre o si hay problemas con el formato de los datos.
+
+Para más detalles sobre los esquemas de datos, consulta el archivo `swagger.yaml`.
