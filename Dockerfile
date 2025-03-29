@@ -1,10 +1,11 @@
 FROM golang:1.24.1-alpine
-RUN apk add --no-cache postgresql-client
+RUN apk add --no-cache postgresql-client dos2unix
+RUN go install github.com/air-verse/air@latest
 WORKDIR /app
 COPY go.mod go.sum ./
-RUN go get -d ./... && go mod tidy
+RUN go mod download
 COPY . .
-COPY start.sh /app/start.sh
-RUN chmod +x /app/start.sh
+RUN dos2unix /app/start.sh && \
+    chmod +x /app/start.sh
 EXPOSE 8080
 CMD ["sh", "/app/start.sh"]

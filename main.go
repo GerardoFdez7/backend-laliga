@@ -11,6 +11,17 @@ import (
 
 var db *gorm.DB
 
+type Match struct {
+	ID          uint      `json:"id" gorm:"primaryKey;autoIncrement"`
+	HomeTeam    string    `json:"homeTeam" gorm:"column:home_team;type:varchar(255);not null"`
+	AwayTeam    string    `json:"awayTeam" gorm:"column:away_team;type:varchar(255);not null"`
+	MatchDate   time.Time `json:"matchDate" gorm:"column:match_date;type:date;not null"`
+	Goals       int       `json:"goals" gorm:"column:goals;default:0"`
+	YellowCards int       `json:"yellowCards" gorm:"column:yellow_cards;default:0"`
+	RedCards    int       `json:"redCards" gorm:"column:red_cards;default:0"`
+	ExtraTime   int       `json:"extraTime" gorm:"column:extra_time;default:0"`
+}
+
 func main() {
 	dsn := "host=db user=postgres password=postgres dbname=matches port=5432 sslmode=disable"
 	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
@@ -24,7 +35,7 @@ func main() {
 	// Configurar CORS
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowMethods:     []string{"GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
@@ -36,6 +47,10 @@ func main() {
 	r.POST("/api/matches", CreateMatch)
 	r.PUT("/api/matches/:id", UpdateMatch)
 	r.DELETE("/api/matches/:id", DeleteMatch)
+	r.PATCH("/api/matches/:id/goals", PatchGoals)
+	r.PATCH("/api/matches/:id/yellowcards", PatchYellowCards)
+	r.PATCH("/api/matches/:id/redcards", PatchRedCards)
+	r.PATCH("/api/matches/:id/extratime", PatchExtraTime)
 
 	r.Run(":8080") // Servidor en el puerto 8080
 }
@@ -142,4 +157,76 @@ func DeleteMatch(c *gin.Context) {
 
 	db.Delete(&match)
 	c.JSON(http.StatusOK, gin.H{"message": "Match deleted successfully"})
+}
+
+// PATCH /api/matches/:id/goals
+func PatchGoals(c *gin.Context) {
+    var match Match
+    id := c.Param("id")
+
+    if err := db.First(&match, id).Error; err != nil {
+        c.JSON(http.StatusNotFound, gin.H{"error": "Match not found"})
+        return
+    }
+
+    // Incrementar el número total de goles en 1
+    db.Model(&match).Update("goals", match.Goals+1)
+
+    // Recargar los datos actualizados
+    db.First(&match, id)
+    c.JSON(http.StatusOK, match)
+}
+
+// PATCH /api/matches/:id/yellowcards
+func PatchYellowCards(c *gin.Context) {
+    var match Match
+    id := c.Param("id")
+
+    if err := db.First(&match, id).Error; err != nil {
+        c.JSON(http.StatusNotFound, gin.H{"error": "Match not found"})
+        return
+    }
+
+    // Incrementar la tarjeta amarilla en uno
+    db.Model(&match).Update("YellowCards", match.YellowCards+1)
+
+    // Recargar los datos actualizados
+    db.First(&match, id)
+    c.JSON(http.StatusOK, match)
+}
+
+// PATCH /api/matches/:id/redcards
+func PatchRedCards(c *gin.Context) {
+    var match Match
+    id := c.Param("id")
+
+    if err := db.First(&match, id).Error; err != nil {
+        c.JSON(http.StatusNotFound, gin.H{"error": "Match not found"})
+        return
+    }
+
+    // Incrementar la tarjeta roja en uno
+    db.Model(&match).Update("RedCards", match.RedCards+1)
+
+    // Recargar los datos actualizados
+    db.First(&match, id)
+    c.JSON(http.StatusOK, match)
+}
+
+// PATCH /api/matches/:id/extratime
+func PatchExtraTime(c *gin.Context) {
+    var match Match
+    id := c.Param("id")
+
+    if err := db.First(&match, id).Error; err != nil {
+        c.JSON(http.StatusNotFound, gin.H{"error": "Match not found"})
+        return
+    }
+
+    // Incrementar el tiempo extra en 1
+    db.Model(&match).Update("ExtraTime", match.ExtraTime+1)
+
+    // Recargar los datos actualizados
+    db.First(&match, id)
+    c.JSON(http.StatusOK, match)
 }

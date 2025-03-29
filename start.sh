@@ -6,4 +6,5 @@ until pg_isready -h db -U postgres; do
 done
 
 echo "Base de datos lista, arrancando la API..."
-go run main.go
+#exec go run main.go
+exec air -c .air.toml

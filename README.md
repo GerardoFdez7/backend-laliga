@@ -2,7 +2,7 @@
 
 🌐 **LaLiga Tracker** es una API desarrollada en **Golang** que centraliza la administración de encuentros deportivos, ofreciendo operaciones completas de creación, consulta, modificación y eliminación de partidos.
 
-![Demo de la API](assets/crear.jpeg)
+![Demo de la API](assets/crear.jpg)
 
 ---
 

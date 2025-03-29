@@ -10,6 +10,7 @@ services:
     ports:
       - "5433:5432"
     volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - db_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
@@ -27,8 +28,10 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: "host=db user=postgres password=postgres dbname=matches port=5432 sslmode=disable"
+      GIN_MODE: debug
     volumes:
       - .:/app
+      - ./tmp:/app/tmp
     command: ["sh", "start.sh"]
     networks:
       - app_network
